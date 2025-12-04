@@ -1,0 +1,143 @@
+========================================
+SAEJAEDANG NEW DESIGN - QUICK DEPLOY
+========================================
+
+✅ NEW DESIGN READY!
+- Korean traditional aesthetics
+- Complete React + TypeScript + Tailwind
+- Public website + Admin dashboard
+- Mock data included
+
+📦 DEPLOYMENT PACKAGE CREATED:
+/home/conorhan/cafe/saejaedang-new-design.tar.gz (42K)
+
+========================================
+DEPLOY TO SERVER 4.230.0.0
+========================================
+
+STEP 1: TRANSFER TO SERVER
+---------------------------
+Replace USERNAME with your SSH username:
+
+  scp /home/conorhan/cafe/saejaedang-new-design.tar.gz USERNAME@4.230.0.0:~/
+
+STEP 2: SSH TO SERVER
+---------------------
+  ssh USERNAME@4.230.0.0
+
+STEP 3: EXTRACT & DEPLOY
+-------------------------
+Run these commands on the server:
+
+  # Extract
+  mkdir -p ~/saejaedang
+  cd ~/saejaedang
+  tar -xzf ~/saejaedang-new-design.tar.gz
+
+  # Install & Build Frontend
+  cd ~/saejaedang/frontend-new
+  npm install
+  npm run build
+
+  # Stop old frontend
+  pm2 stop saejaedang-frontend 2>/dev/null || true
+  pm2 delete saejaedang-frontend 2>/dev/null || true
+
+  # Start new frontend
+  npm install -g serve
+  pm2 start "serve -s build -l 3000" --name saejaedang-frontend
+  pm2 save
+
+  # Check status
+  pm2 status
+
+STEP 4: ACCESS WEBSITE
+-----------------------
+  Public: http://4.230.0.0:3000
+  Admin:  http://4.230.0.0:3000/admin/login
+    Username: admin
+    Password: admin123
+
+========================================
+NGINX SETUP (Optional - Port 80)
+========================================
+
+If you want to serve on port 80 with Nginx:
+
+  sudo apt-get install -y nginx
+
+  # Create config (replace USERNAME with your username)
+  sudo nano /etc/nginx/sites-available/saejaedang
+
+  # Paste this config:
+  server {
+      listen 80;
+      server_name 4.230.0.0;
+      root /home/USERNAME/saejaedang/frontend-new/build;
+      index index.html;
+      location / {
+          try_files $uri $uri/ /index.html;
+      }
+      location /api {
+          proxy_pass http://localhost:5000;
+      }
+  }
+
+  # Enable
+  sudo ln -s /etc/nginx/sites-available/saejaedang /etc/nginx/sites-enabled/
+  sudo rm /etc/nginx/sites-enabled/default
+  sudo nginx -t
+  sudo systemctl reload nginx
+
+  # Open firewall
+  sudo ufw allow 80/tcp
+
+========================================
+FULL DOCUMENTATION
+========================================
+
+Detailed guide: /home/conorhan/cafe/DEPLOY_NEW_DESIGN.md
+Component docs:  /home/conorhan/cafe/frontend-new/PROJECT_STRUCTURE.md
+
+========================================
+TROUBLESHOOTING
+========================================
+
+View logs:
+  pm2 logs saejaedang-frontend
+
+Restart:
+  pm2 restart saejaedang-frontend
+
+Check port 3000:
+  sudo lsof -i :3000
+
+Kill process on port:
+  sudo kill -9 <PID>
+
+========================================
+FEATURES INCLUDED
+========================================
+
+PUBLIC WEBSITE:
+✅ Hero section with Korean design
+✅ About section (brand story)
+✅ Product catalog with filters
+✅ Korean ornament decorations
+✅ Responsive mobile design
+
+ADMIN DASHBOARD:
+✅ Secure login page
+✅ Order management table
+✅ Order detail modal with updates
+✅ Filtering and sorting
+✅ Print-friendly layouts
+
+DESIGN SYSTEM:
+✅ Korean traditional colors
+✅ Custom fonts (Gowun Batang, Noto Serif KR)
+✅ SVG ornaments (cloud, lotus patterns)
+✅ Soft curves & organic shapes
+✅ Paper textures & gradients
+
+========================================
