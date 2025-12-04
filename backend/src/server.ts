@@ -1,11 +1,27 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
+import connectDB from './config/database';
+import Order from './models/Order';
+import Contact from './models/Contact';
+import Product from './models/Product';
+import { orderValidation, contactValidation } from './middleware/validation';
+import { sendOrderConfirmationEmail, sendContactNotificationEmail } from './utils/emailService';
+
+// Load environment variables
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Connect to MongoDB
+connectDB();
+
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  credentials: true,
+}));
 app.use(express.json());
 
 // Sample data for SaeJaeDang cafe items
@@ -181,12 +197,114 @@ app.get('/api/categories', (req: Request, res: Response) => {
   res.json(categories);
 });
 
-// TODO: Add POST endpoints for contact form, newsletter subscription, etc.
-// Example:
-// app.post('/api/contact', (req: Request, res: Response) => {
-//   const { name, email, message } = req.body;
-//   // Handle contact form submission
-// });
+/**
+ * POST /api/orders - Create a new order
+ */
+app.post('/api/orders', orderValidation, async (req: Request, res: Response) => {
+  try {
+    const { items, customerInfo, subtotal, shippingFee, total } = req.body;
+
+    // Create new order
+    const order = new Order({
+      items,
+      customerInfo,
+      subtotal,
+      shippingFee: shippingFee || 3000,
+      total,
+      status: 'pending',
+    });
+
+    await order.save();
+
+    // Send confirmation email (non-blocking)
+    sendOrderConfirmationEmail(order).catch((err) =>
+      console.error('Email error:', err)
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Order created successfully',
+      order: {
+        orderNumber: order.orderNumber,
+        status: order.status,
+        total: order.total,
+        createdAt: order.createdAt,
+      },
+    });
+  } catch (error) {
+    console.error('Error creating order:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create order',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
+ * GET /api/orders/:orderNumber - Get order by order number
+ */
+app.get('/api/orders/:orderNumber', async (req: Request, res: Response) => {
+  try {
+    const order = await Order.findOne({ orderNumber: req.params.orderNumber });
+
+    if (!order) {
+      return res.status(404).json({
+        success: false,
+        message: 'Order not found',
+      });
+    }
+
+    res.json({
+      success: true,
+      order,
+    });
+  } catch (error) {
+    console.error('Error fetching order:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch order',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
+
+/**
+ * POST /api/contact - Submit contact form
+ */
+app.post('/api/contact', contactValidation, async (req: Request, res: Response) => {
+  try {
+    const { name, email, phone, message } = req.body;
+
+    // Save contact to database
+    const contact = new Contact({
+      name,
+      email,
+      phone,
+      message,
+      status: 'new',
+    });
+
+    await contact.save();
+
+    // Send notification email (non-blocking)
+    sendContactNotificationEmail(name, email, phone, message).catch((err) =>
+      console.error('Email error:', err)
+    );
+
+    res.status(201).json({
+      success: true,
+      message: 'Your message has been sent successfully. We will contact you soon.',
+    });
+  } catch (error) {
+    console.error('Error saving contact:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to send message',
+      error: error instanceof Error ? error.message : 'Unknown error',
+    });
+  }
+});
 
 // Start server
 app.listen(PORT, () => {

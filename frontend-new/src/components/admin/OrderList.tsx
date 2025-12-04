@@ -7,7 +7,7 @@ interface OrderListProps {
   onUpdateStatus: (orderId: string, status: Order['status']) => void;
 }
 
-export const OrderList: React.FC<OrderListProps> = ({ orders, onViewOrder, onUpdateStatus }) => {
+export const OrderList: React.FC<OrderListProps> = ({ orders, onViewOrder, onUpdateStatus: _onUpdateStatus }) => {
   const [filters, setFilters] = useState<OrderFilters>({
     status: [],
     searchQuery: '',

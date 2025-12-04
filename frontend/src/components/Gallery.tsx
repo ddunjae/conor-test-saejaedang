@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Gallery.css';
+import LoadingSpinner from './LoadingSpinner';
 
 interface CafeItem {
   id: number;
@@ -120,7 +121,7 @@ const Gallery: React.FC = () => {
 
         {/* Items Grid */}
         {loading ? (
-          <div className="loading">Loading...</div>
+          <LoadingSpinner message="상품을 불러오는 중... / Loading products..." />
         ) : (
           <div className="gallery-grid">
             {items.map(item => (

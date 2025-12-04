@@ -8,14 +8,14 @@ interface HeaderProps {
 export const Header: React.FC<HeaderProps> = ({ isAdmin = false }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const publicNavItems = [
+  const publicNavItems: Array<{ label: string; labelEn?: string; href: string }> = [
     { label: '소개', labelEn: 'About', href: '#about' },
     { label: '제품', labelEn: 'Products', href: '#products' },
     { label: '주문', labelEn: 'Order', href: '#order' },
     { label: '문의', labelEn: 'Contact', href: '#contact' },
   ];
 
-  const adminNavItems = [
+  const adminNavItems: Array<{ label: string; labelEn?: string; href: string }> = [
     { label: '주문 목록', href: '/admin/orders' },
     { label: '제품 관리', href: '/admin/products' },
     { label: '설정', href: '/admin/settings' },
