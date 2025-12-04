@@ -1,0 +1,76 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║              SaeJaeDang Cafe - VM Deployment Instructions                ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+📦 DEPLOYMENT PACKAGE READY: /home/conorhan/cafe/cafe-deploy.tar.gz (211KB)
+
+═══════════════════════════════════════════════════════════════════════════
+
+🚀 OPTION 1: QUICK DEPLOY (RECOMMENDED)
+
+Run these commands in order:
+
+1️⃣ Transfer files to VM:
+   scp /home/conorhan/cafe/cafe-deploy.tar.gz conortest@4.218.11.239:~/
+   Password: qwert12345!!
+
+2️⃣ SSH into VM:
+   ssh conortest@4.218.11.239
+   Password: qwert12345!!
+
+3️⃣ On the VM, run automated setup:
+   mkdir -p ~/cafe && tar -xzf cafe-deploy.tar.gz -C ~/cafe && chmod +x ~/cafe/vm-setup.sh && cd ~/cafe && ./vm-setup.sh
+
+4️⃣ Access your website:
+   Frontend: http://4.218.11.239:3000
+   Backend:  http://4.218.11.239:5000
+
+═══════════════════════════════════════════════════════════════════════════
+
+📋 OPTION 2: STEP-BY-STEP MANUAL DEPLOY
+
+See full instructions in: /home/conorhan/cafe/DEPLOYMENT_GUIDE.md
+
+═══════════════════════════════════════════════════════════════════════════
+
+✨ WHAT GETS DEPLOYED:
+
+✅ Backend API Server (Express + TypeScript)
+   - Running on port 5000
+   - Managed by PM2
+   - Auto-restarts on crash
+
+✅ Frontend React App (React + TypeScript)
+   - Running on port 3000
+   - Production optimized build
+   - Managed by PM2
+
+✅ Auto-start on boot configured
+✅ Firewall rules configured
+✅ Process monitoring enabled
+
+═══════════════════════════════════════════════════════════════════════════
+
+🛠️ USEFUL COMMANDS (after deployment):
+
+View status:        pm2 status
+View logs:          pm2 logs
+Restart all:        pm2 restart all
+Stop all:           pm2 stop all
+
+═══════════════════════════════════════════════════════════════════════════
+
+📞 TROUBLESHOOTING:
+
+If ports are in use:
+   sudo lsof -i :3000
+   sudo lsof -i :5000
+
+Check firewall:
+   sudo ufw status
+
+View PM2 logs:
+   pm2 logs cafe-backend
+   pm2 logs cafe-frontend
+
+═══════════════════════════════════════════════════════════════════════════

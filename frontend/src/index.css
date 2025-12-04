@@ -1,0 +1,59 @@
+/* Base styles and CSS Reset */
+
+/* Import Google Fonts - Noto Serif KR for Korean traditional feel */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;500;600;700&display=swap');
+
+/* CSS Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Base Typography and Colors */
+body {
+  margin: 0;
+  font-family: 'Noto Serif KR', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #fdfcfa;
+  color: #3a2a1a;
+  line-height: 1.6;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Color Palette:
+  Primary Brown: #3a2a1a (Dark brown - text)
+  Secondary Brown: #5a4a3a (Medium brown - secondary text)
+  Accent Gold: #d4a574 (Gold - highlights, buttons)
+  Accent Gold Dark: #c19563 (Darker gold - hover states)
+  Light Beige: #f5f0e8 (Background)
+  Lighter Beige: #faf7f2 (Alternative background)
+  Text Muted: #8b7355 (Muted text)
+*/
+
+/* Remove default button styles */
+button {
+  border: none;
+  background: none;
+  font-family: inherit;
+}
+
+/* Smooth transitions for interactive elements */
+a,
+button {
+  transition: all 0.3s ease;
+}
+
+/* Image optimization */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
